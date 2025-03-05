@@ -18,18 +18,29 @@ export class UserService {
   }
 
   postUser(createUserDto: CreateUserDto) {
-    return createUserDto;
+    return this.userRepository.save(createUserDto);
   }
 
-  updateUser(updateUserDto: UpdateUserDto, userId: number) {
-    return { updateUserDto, userId };
+  async updateUser(updateUserDto: UpdateUserDto, userId: number) {
+    const data = await this.userRepository.findOne({
+      where: {
+        intId: userId
+      }
+    });
+
+    updateUserDto = {
+      ...data,
+      ...updateUserDto
+    }
+    
+    return this.userRepository.save(updateUserDto);
   }
 
   userById(userId: number) {
-    return userId;
+    return this.userRepository.findOne({where: {intId: userId}});
   }
 
   deleteUser(userId: number) {
-    return userId;
+    return this.userRepository.delete(userId);
   }
 }
